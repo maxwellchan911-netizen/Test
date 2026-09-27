@@ -1,0 +1,845 @@
+local repo = 'https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/'
+
+local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
+local ThemeManager = loadstring(game:HttpGet(repo .. 'addons/ThemeManager.lua'))()
+local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua'))()
+
+local Options = Library.Options
+local Toggles = Library.Toggles
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+
+-- Mobile-friendly defaults
+Library.ShowToggleFrameInKeybinds = true
+Library.ShowCustomCursor = false
+Library.NotifySide = "Left"
+
+-- ========== Professional Theme ==========
+Library.AccentColor     = Color3.fromRGB(70, 130, 220)
+Library.MainColor       = Color3.fromRGB(18, 18, 20)
+Library.BackgroundColor = Color3.fromRGB(12, 12, 14)
+Library.OutlineColor    = Color3.fromRGB(32, 32, 36)
+Library.FontColor       = Color3.fromRGB(225, 225, 230)
+Library.RiskColor       = Color3.fromRGB(220, 60, 60)
+
+local Window = Library:CreateWindow({
+    Title = 'iloveyouimgay | hvh loader',
+    Center = true,
+    AutoShow = true,
+    Resizable = true,
+    ShowCustomCursor = false,
+    UnlockMouseWhileOpen = true,
+    TabPadding = 8,
+    MenuFadeTime = 0.2,
+    Size = UDim2.fromOffset(540, 340)
+})
+
+-- ==========================================
+-- Tabs
+-- ==========================================
+local Tabs = {
+    Main = Window:AddTab('Main'),
+    AntiAim = Window:AddTab('Anti-Aim'),
+    Lua = Window:AddTab('Lua'),
+    ['UI Settings'] = Window:AddTab('UI Settings'),
+}
+
+-- ==========================================
+-- Voidspam Section (Default = false)
+-- ==========================================
+local VoidspamGroup = Tabs.Main:AddLeftGroupbox('Voidspam')
+
+VoidspamGroup:AddToggle('VoidspamEnabled', {
+    Text = 'Enabled',
+    Default = false,
+    Tooltip = 'Enable Voidspam (Teleports up to 1 Billion Studs)',
+}):AddKeyPicker('VoidspamKey', {
+    Default = 'None',
+    Mode = 'Toggle',
+    SyncToggleState = true,
+    Text = 'Voidspam'
+})
+
+VoidspamGroup:AddDropdown('VoidspamMode', {
+    Values = {
+        'Quantum',
+        'Standard',
+        'Precision',
+        'Aggressive',
+        'Hyper',
+        'Silent',
+        'Custom'
+    },
+    Default = 1,
+    Multi = false,
+    Text = 'Mode'
+})
+
+VoidspamGroup:AddToggle('VoidspamRageSupport', {
+    Text = 'Ragebot Support',
+    Default = false,
+    Tooltip = 'Optimizes coordinate output for HVH Ragebot hit registration'
+})
+
+VoidspamGroup:AddDivider()
+
+-- Range Sliders (Scaled up for extreme 1 Billion stud range capability)
+VoidspamGroup:AddSlider('VoidspamZRange', {
+    Text = 'Z Range',
+    Default = 100000000,
+    Min = 1000,
+    Max = 1000000000,
+    Rounding = 0,
+    Compact = false
+})
+
+VoidspamGroup:AddSlider('VoidspamSRange', {
+    Text = 'S Range',
+    Default = 100000000,
+    Min = 1000,
+    Max = 1000000000,
+    Rounding = 0,
+    Compact = false
+})
+
+VoidspamGroup:AddSlider('VoidspamXRange', {
+    Text = 'X Range',
+    Default = 100000000,
+    Min = 1000,
+    Max = 1000000000,
+    Rounding = 0,
+    Compact = false
+})
+
+VoidspamGroup:AddSlider('VoidspamVRange', {
+    Text = 'V Range',
+    Default = 100000000,
+    Min = 1000,
+    Max = 1000000000,
+    Rounding = 0,
+    Compact = false
+})
+
+VoidspamGroup:AddSlider('VoidspamARange', {
+    Text = 'A Range',
+    Default = 100000000,
+    Min = 1000,
+    Max = 1000000000,
+    Rounding = 0,
+    Compact = false
+})
+
+-- ==========================================
+-- Void Evasion Section (Default = false)
+-- ==========================================
+local EvasionGroup = Tabs.Main:AddRightGroupbox('Void Evasion')
+
+EvasionGroup:AddToggle('VoidEvasionEnabled', {
+    Text = 'Enabled',
+    Default = false,
+    Tooltip = 'Enable Void Evasion (Massive Void Stud Evasion)',
+}):AddKeyPicker('VoidEvasionKey', {
+    Default = 'None',
+    Mode = 'Toggle',
+    SyncToggleState = true,
+    Text = 'Void Evasion'
+})
+
+EvasionGroup:AddDropdown('EvasionMode', {
+    Values = {
+        'Quantum',
+        'Adaptive',
+        'Predictive',
+        'Reactive',
+        'Aggressive',
+        'Safe'
+    },
+    Default = 1,
+    Multi = false,
+    Text = 'Evasion Mode'
+})
+
+EvasionGroup:AddToggle('EvasionRageSupport', {
+    Text = 'Ragebot Support',
+    Default = false,
+    Tooltip = 'Keeps target locks active for Ragebot during rapid void evasion'
+})
+
+EvasionGroup:AddSlider('EvasionSpeed', {
+    Text = 'Speed',
+    Default = 50000,
+    Min = 1,
+    Max = 1000000,
+    Rounding = 0,
+    Compact = false,
+    Tooltip = 'Can reach up to 1 Million speed studs for dodging'
+})
+
+EvasionGroup:AddToggle('EvasionAuto', {
+    Text = 'Auto Evasion',
+    Default = false
+})
+
+EvasionGroup:AddDivider()
+
+-- ==========================================
+-- UE Counter Section (Ultimate Ragebot Counter & Standby Void)
+-- ==========================================
+EvasionGroup:AddToggle('UECounterEnabled', {
+    Text = 'UE Counter Enabled',
+    Default = false,
+    Tooltip = 'Stands by in unhittable void and lightning-counters any detected Rageboters',
+}):AddKeyPicker('UECounterKey', {
+    Default = 'None',
+    Mode = 'Toggle',
+    SyncToggleState = true,
+    Text = 'UE Counter'
+})
+
+EvasionGroup:AddDropdown('UECounterMode', {
+    Values = {
+        'Instant Retaliate',
+        'Quantum Flash',
+        'Absolute Annihilation',
+        'Blink Strike'
+    },
+    Default = 1,
+    Multi = false,
+    Text = 'Counter Mode'
+})
+
+EvasionGroup:AddToggle('UECounterRageSupport', {
+    Text = 'Ragebot Hitbox Support',
+    Default = true,
+    Tooltip = 'Optimizes coordinates and target lock formulas specifically for active Ragebot hits'
+})
+
+EvasionGroup:AddSlider('UECounterSpeed', {
+    Text = 'Counter Speed',
+    Default = 50,
+    Min = 1,
+    Max = 100,
+    Rounding = 1,
+    Compact = false,
+    Tooltip = 'Speed of the light-speed strike back from the void'
+})
+
+EvasionGroup:AddDivider()
+
+-- ==========================================
+-- Orbit Section (Hyper-Sticky HvH Target Lock)
+-- ==========================================
+EvasionGroup:AddToggle('OrbitEnabled', {
+    Text = 'Orbit Enabled',
+    Default = false,
+    Tooltip = 'Sticks and orbits around nearest enemy tightly against Rageboters',
+}):AddKeyPicker('OrbitKey', {
+    Default = 'None',
+    Mode = 'Toggle',
+    SyncToggleState = true,
+    Text = 'Orbit'
+})
+
+EvasionGroup:AddDropdown('OrbitMode', {
+    Values = {
+        'Circular',
+        'Zigzag',
+        'Spherical Chaos',
+        'Vertical Wave',
+        'Teleport Lock'
+    },
+    Default = 1,
+    Multi = false,
+    Text = 'Orbit Mode'
+})
+
+EvasionGroup:AddSlider('OrbitRadius', {
+    Text = 'Orbit Radius',
+    Default = 10,
+    Min = 1,
+    Max = 100,
+    Rounding = 1,
+    Compact = false,
+    Tooltip = 'Distance radius from target'
+})
+
+EvasionGroup:AddSlider('OrbitSpeed', {
+    Text = 'Orbit Speed',
+    Default = 25,
+    Min = 1,
+    Max = 100,
+    Rounding = 1,
+    Compact = false,
+    Tooltip = 'Rotation/movement speed around target'
+})
+
+-- ==========================================
+-- Anti-Aim Tab Configuration
+-- ==========================================
+local AntiAimGroup = Tabs['Anti-Aim']:AddLeftGroupbox('Desync & Yaw')
+
+AntiAimGroup:AddToggle('AntiAimEnabled', {
+    Text = 'Enabled',
+    Default = false,
+    Tooltip = 'Enable Advanced Anti-Aim Systems',
+}):AddKeyPicker('AntiAimKey', {
+    Default = 'None',
+    Mode = 'Toggle',
+    SyncToggleState = true,
+    Text = 'Anti-Aim'
+})
+
+AntiAimGroup:AddDropdown('YawMode', {
+    Values = {
+        'Spin (Screen Spin)',
+        'Jitter',
+        'Sideways',
+        'Backwards',
+        'Random Chaos',
+        'Static Desync'
+    },
+    Default = 1,
+    Multi = false,
+    Text = 'Yaw Mode'
+})
+
+AntiAimGroup:AddSlider('AntiAimSpeed', {
+    Text = 'Spin / Jitter Speed',
+    Default = 50,
+    Min = 1,
+    Max = 100,
+    Rounding = 1,
+    Compact = false,
+    Tooltip = 'Speed of screen rotation and body desync yaw'
+})
+
+AntiAimGroup:AddToggle('SpinCamera', {
+    Text = 'Spin Camera / Screen',
+    Default = true,
+    Tooltip = 'Forces camera/screen to spin alongside body anti-aim (Works for Mobile & PC)'
+})
+
+local PitchGroup = Tabs['Anti-Aim']:AddRightGroupbox('Pitch & Fake Angles')
+
+PitchGroup:AddDropdown('PitchMode', {
+    Values = {
+        'Zero (Flat)',
+        'Up (Jitter Up)',
+        'Down (Bury)',
+        'Random Pitch'
+    },
+    Default = 1,
+    Multi = false,
+    Text = 'Pitch Mode'
+})
+
+PitchGroup:AddToggle('FakeLagEnabled', {
+    Text = 'Fake Lag Desync',
+    Default = false,
+    Tooltip = 'Chokes network packets to desync real hitbox position'
+})
+
+PitchGroup:AddSlider('FakeLagLimit', {
+    Text = 'Choke Limit',
+    Default = 14,
+    Min = 1,
+    Max = 25,
+    Rounding = 0,
+    Compact = false,
+    Tooltip = 'Packet choke limit for network lag desync'
+})
+
+-- ==========================================
+-- Lua Tab Execution Section
+-- ==========================================
+local LuaGroup = Tabs.Lua:AddLeftGroupbox('Custom Scripts')
+
+LuaGroup:AddButton('w7w7 lua', function()
+    task.spawn(function()
+        local success, err = pcall(function()
+            script_key = "trial"
+            loadstring(game:HttpGet("https://api.getpolsec.com/scripts/hosted/8f4f1d4da85144e9f0ebc1fc69f8d69e2281c334225cca34ab9052ec9d80017a.lua"))()
+        end)
+        if not success then
+            warn("Failed to execute w7w7 lua: " .. tostring(err))
+        end
+    end)
+end)
+
+LuaGroup:AddButton('Crosshair Script', function()
+    task.spawn(function()
+        local playerGui = LocalPlayer:WaitForChild("PlayerGui")
+
+        if playerGui:FindFirstChild("DynamicCrosshairGui") then
+            playerGui.DynamicCrosshairGui:Destroy()
+        end
+
+        local screenGui = Instance.new("ScreenGui")
+        screenGui.Name = "DynamicCrosshairGui"
+        screenGui.ResetOnSpawn = false
+        screenGui.IgnoreGuiInset = true
+        screenGui.Parent = playerGui
+
+        local container = Instance.new("Frame")
+        container.Name = "CrosshairContainer"
+        container.Size = UDim2.new(0, 0, 0, 0)
+        container.Position = UDim2.new(0.5, 0, 0.5, 0)
+        container.AnchorPoint = Vector2.new(0.5, 0.5)
+        container.BackgroundTransparency = 1
+        container.Parent = screenGui
+
+        local baseThickness = 4
+        local baseLength = 24
+        local baseGap = 10
+
+        local function createSharpLine()
+            local line = Instance.new("Frame")
+            line.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            line.BorderSizePixel = 0
+            line.Parent = container
+
+            local stroke = Instance.new("UIStroke")
+            stroke.Thickness = 1.5
+            stroke.Color = Color3.fromRGB(0, 0, 0)
+            stroke.Transparency = 0
+            stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+            stroke.Parent = line
+
+            return line
+        end
+
+        local top = createSharpLine()
+        local bottom = createSharpLine()
+        local left = createSharpLine()
+        local right = createSharpLine()
+
+        local label = Instance.new("TextLabel")
+        label.Name = "Label"
+        label.Size = UDim2.new(0, 250, 0, 30)
+        label.Position = UDim2.new(0.5, 0, 0.5, 42)
+        label.AnchorPoint = Vector2.new(0.5, 0)
+        label.BackgroundTransparency = 1
+        label.Text = "iloveyouimgay.win!"
+        label.TextSize = 16
+        label.Font = Enum.Font.Arcade
+        label.Parent = screenGui
+
+        local textStroke = Instance.new("UIStroke")
+        textStroke.Thickness = 1.5
+        textStroke.Color = Color3.fromRGB(0, 0, 0)
+        textStroke.Transparency = 0
+        textStroke.Parent = label
+
+        local hue = 0
+        local rotation = 0
+        local colorSpeed = 0.35       
+        local spinSpeed = 90          
+        local pulseSpeed = 4          
+        local pulseIntensity = 0.35   
+
+        local connection
+        connection = RunService.RenderStepped:Connect(function(dt)
+            if not screenGui.Parent then
+                connection:Disconnect()
+                return
+            end
+
+            hue = (hue + (dt * colorSpeed)) % 1
+            local rainbowColor = Color3.fromHSV(hue, 1, 1)
+            
+            top.BackgroundColor3 = rainbowColor
+            bottom.BackgroundColor3 = rainbowColor
+            left.BackgroundColor3 = rainbowColor
+            right.BackgroundColor3 = rainbowColor
+            label.TextColor3 = rainbowColor
+            
+            rotation = (rotation + (spinSpeed * dt)) % 360
+            container.Rotation = rotation
+            
+            local pulseFactor = 1 + math.sin(tick() * pulseSpeed) * pulseIntensity
+            local currentLength = baseLength * pulseFactor
+            local currentGap = baseGap * pulseFactor
+            local currentThickness = baseThickness
+            
+            top.Size = UDim2.new(0, currentThickness, 0, currentLength)
+            top.Position = UDim2.new(0.5, -currentThickness/2, 0, -currentLength - currentGap)
+
+            bottom.Size = UDim2.new(0, currentThickness, 0, currentLength)
+            bottom.Position = UDim2.new(0.5, -currentThickness/2, 0, currentGap)
+
+            left.Size = UDim2.new(0, currentLength, 0, currentThickness)
+            left.Position = UDim2.new(0, -currentLength - currentGap, 0.5, -currentThickness/2)
+
+            right.Size = UDim2.new(0, currentLength, 0, currentThickness)
+            right.Position = UDim2.new(0, currentGap, 0.5, -currentThickness/2)
+        end)
+    end)
+end)
+
+-- Universal Executor Section
+local ExecuterGroup = Tabs.Lua:AddRightGroupbox('Universal Executor')
+
+ExecuterGroup:AddInput('ScriptInput', {
+    Text = 'Script / Code / URL',
+    Default = '',
+    Placeholder = 'Paste code, loadstring, or URL here...',
+    Numeric = false,
+    Finished = false,
+})
+
+ExecuterGroup:AddButton('Execute Script', function()
+    local code = Options.ScriptInput and Options.ScriptInput.Value or ""
+    if code == "" then return end
+    
+    task.spawn(function()
+        local func, err
+        if code:match("^https?://") then
+            local successFetch, resultFetch = pcall(function()
+                return game:HttpGet(code)
+            end)
+            if successFetch then
+                code = resultFetch
+            else
+                warn("Failed to fetch URL: " .. tostring(resultFetch))
+                return
+            end
+        end
+        
+        func, err = loadstring(code)
+        if not func then
+            func, err = pcall(function()
+                return load(code)()
+            end)
+            if not func then
+                warn("Execution Error: " .. tostring(err))
+                return
+            end
+        else
+            local successExec, execErr = pcall(func)
+            if not successExec then
+                warn("Execution Error: " .. tostring(execErr))
+            end
+        end
+    end)
+end)
+
+-- ==========================================
+-- Logic Loops (Safe, Isolated and Fixed Execution)
+-- ==========================================
+
+-- Helper function to find the absolute nearest target player
+local function getNearestTarget()
+    local nearestTarget = nil
+    local shortestDistance = math.huge
+    local character = LocalPlayer.Character
+    if not character or not character:FindFirstChild("HumanoidRootPart") then return nil end
+    local myRoot = character.HumanoidRootPart
+
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid.Health > 0 then
+            local targetRoot = player.Character.HumanoidRootPart
+            local distance = (myRoot.Position - targetRoot.Position).Magnitude
+            if distance < shortestDistance then
+                shortestDistance = distance
+                nearestTarget = targetRoot
+            end
+        end
+    end
+    return nearestTarget
+end
+
+-- 1. Anti-Aim & Camera Spin Loop
+RunService.RenderStepped:Connect(function(dt)
+    local success, err = pcall(function()
+        if not Toggles.AntiAimEnabled or not Toggles.AntiAimEnabled.Value then return end
+        
+        local character = LocalPlayer.Character
+        if not character or not character:FindFirstChild("HumanoidRootPart") then return end
+        local rootPart = character.HumanoidRootPart
+        
+        local speed = Options.AntiAimSpeed and Options.AntiAimSpeed.Value or 50
+        local yawMode = Options.YawMode and Options.YawMode.Value or 'Spin (Screen Spin)'
+        local spinCam = Toggles.SpinCamera and Toggles.SpinCamera.Value or false
+        
+        local currentTick = tick() * (speed * 0.5)
+        local angleOffset = 0
+        
+        if yawMode == 'Spin (Screen Spin)' then
+            angleOffset = (currentTick * 15) % 360
+        elseif yawMode == 'Jitter' then
+            angleOffset = (math.random(0, 1) == 1 and 90 or -90)
+        elseif yawMode == 'Sideways' then
+            angleOffset = 90
+        elseif yawMode == 'Backwards' then
+            angleOffset = 180
+        elseif yawMode == 'Random Chaos' then
+            angleOffset = math.random(0, 360)
+        elseif yawMode == 'Static Desync' then
+            angleOffset = 125
+        end
+        
+        local camCF = Camera.CFrame
+        local lookVector = camCF.LookVector
+        local flatLook = Vector3.new(lookVector.X, 0, lookVector.Z).Unit
+        
+        if flatLook.Magnitude > 0 then
+            local baseCF = CFrame.new(rootPart.Position, rootPart.Position + flatLook)
+            rootPart.CFrame = baseCF * CFrame.Angles(0, math.rad(angleOffset), 0)
+        end
+        
+        if spinCam and yawMode == 'Spin (Screen Spin)' then
+            Camera.CFrame = Camera.CFrame * CFrame.Angles(0, 0, math.rad(dt * speed * 2))
+        end
+    end)
+    if not success then
+        -- Suppress repetitive log spam while maintaining safety
+    end
+end)
+
+-- 2. UE Counter Loop
+RunService.Heartbeat:Connect(function()
+    pcall(function()
+        if not Toggles.UECounterEnabled or not Toggles.UECounterEnabled.Value then return end
+        
+        local character = LocalPlayer.Character
+        if not character or not character:FindFirstChild("HumanoidRootPart") then return end
+        local rootPart = character.HumanoidRootPart
+        
+        local targetRoot = getNearestTarget()
+        local rageSupport = Toggles.UECounterRageSupport and Toggles.UECounterRageSupport.Value or false
+        
+        local isThreatDetected = false
+        local threatThreshold = rageSupport and 3000 or 1500
+        
+        if targetRoot then
+            local distance = (rootPart.Position - targetRoot.Position).Magnitude
+            if distance < threatThreshold then
+                isThreatDetected = true
+            end
+        end
+        
+        if not isThreatDetected then
+            rootPart.CFrame = CFrame.new(0, 999999999, 0)
+        else
+            local counterSpeed = Options.UECounterSpeed and Options.UECounterSpeed.Value or 50
+            local mode = Options.UECounterMode and Options.UECounterMode.Value or 'Instant Retaliate'
+            local timeVal = tick() * (counterSpeed * 0.5)
+            
+            local offsetX, offsetY, offsetZ = 0, 2, 0
+            if mode == 'Instant Retaliate' then
+                offsetX = math.cos(timeVal) * (rageSupport and 1.5 or 3)
+                offsetZ = math.sin(timeVal) * (rageSupport and 1.5 or 3)
+                offsetY = rageSupport and 0.5 or 2
+            elseif mode == 'Quantum Flash' then
+                offsetX = (math.random(-1, 1)) * (rageSupport and 2 or 5)
+                offsetZ = (math.random(-1, 1)) * (rageSupport and 2 or 5)
+                offsetY = math.random(0, rageSupport and 2 or 4)
+            elseif mode == 'Absolute Annihilation' then
+                offsetX = math.cos(timeVal * 2) * (rageSupport and 1 or 2)
+                offsetZ = math.sin(timeVal * 2) * (rageSupport and 1 or 2)
+                offsetY = rageSupport and 0 or 1
+            elseif mode == 'Blink Strike' then
+                offsetX = math.sin(timeVal) * (rageSupport and 2 or 4)
+                offsetZ = math.cos(timeVal) * (rageSupport and 2 or 4)
+                offsetY = rageSupport and 1 or 2
+            end
+            
+            local strikePos = targetRoot.Position + Vector3.new(offsetX, offsetY, offsetZ)
+            rootPart.CFrame = CFrame.new(strikePos, targetRoot.Position)
+        end
+    end)
+end)
+
+-- 3. Orbit Loop
+RunService.Heartbeat:Connect(function()
+    pcall(function()
+        if not Toggles.OrbitEnabled or not Toggles.OrbitEnabled.Value then return end
+        
+        local character = LocalPlayer.Character
+        if not character or not character:FindFirstChild("HumanoidRootPart") then return end
+        local rootPart = character.HumanoidRootPart
+        
+        local targetRoot = getNearestTarget()
+        if not targetRoot then return end
+        
+        local radius = Options.OrbitRadius and Options.OrbitRadius.Value or 10
+        local speed = Options.OrbitSpeed and Options.OrbitSpeed.Value or 25
+        local mode = Options.OrbitMode and Options.OrbitMode.Value or 'Circular'
+        
+        local timeVal = tick() * speed
+        local offsetX, offsetY, offsetZ = 0, 0, 0
+        
+        if mode == 'Circular' then
+            offsetX = math.cos(timeVal) * radius
+            offsetZ = math.sin(timeVal) * radius
+            offsetY = 0
+        elseif mode == 'Zigzag' then
+            offsetX = math.cos(timeVal) * radius
+            offsetZ = math.sin(timeVal) * radius
+            offsetY = math.sin(tick() * (speed * 2)) * (radius * 0.5)
+        elseif mode == 'Spherical Chaos' then
+            offsetX = math.cos(timeVal) * math.sin(timeVal * 0.5) * radius
+            offsetY = math.sin(timeVal * 0.75) * radius
+            offsetZ = math.sin(timeVal) * math.cos(timeVal * 0.5) * radius
+        elseif mode == 'Vertical Wave' then
+            offsetX = math.cos(timeVal) * radius
+            offsetZ = math.sin(timeVal) * radius
+            offsetY = math.cos(tick() * (speed * 1.5)) * radius
+        elseif mode == 'Teleport Lock' then
+            offsetX = (math.random(0, 1) == 0 and 1 or -1) * radius
+            offsetZ = (math.random(0, 1) == 0 and 1 or -1) * radius
+            offsetY = math.random(-2, 5)
+        end
+        
+        local targetPos = targetRoot.Position + Vector3.new(offsetX, offsetY, offsetZ)
+        rootPart.CFrame = CFrame.new(targetPos, targetRoot.Position)
+    end)
+end)
+
+-- 4. Voidspam Loop
+RunService.Heartbeat:Connect(function()
+    pcall(function()
+        if not Toggles.VoidspamEnabled or not Toggles.VoidspamEnabled.Value then return end
+        
+        local character = LocalPlayer.Character
+        if not character or not character:FindFirstChild("HumanoidRootPart") then return end
+        
+        local rootPart = character.HumanoidRootPart
+        
+        local xRange = Options.VoidspamXRange and Options.VoidspamXRange.Value or 100000000
+        local zRange = Options.VoidspamZRange and Options.VoidspamZRange.Value or 100000000
+        local vRange = Options.VoidspamVRange and Options.VoidspamVRange.Value or 100000000
+        
+        local randomX = math.random(-xRange, xRange)
+        local randomY = math.random(-vRange, vRange)
+        local randomZ = math.random(-zRange, zRange)
+        
+        rootPart.CFrame = CFrame.new(randomX, randomY, randomZ)
+    end)
+end)
+
+-- 5. Void Evasion Loop
+RunService.Heartbeat:Connect(function()
+    pcall(function()
+        if not Toggles.VoidEvasionEnabled or not Toggles.VoidEvasionEnabled.Value then return end
+        
+        local character = LocalPlayer.Character
+        if not character or not character:FindFirstChild("HumanoidRootPart") then return end
+        
+        local rootPart = character.HumanoidRootPart
+        local speedVal = Options.EvasionSpeed and Options.EvasionSpeed.Value or 50000
+        
+        local scaleFactor = speedVal * 500
+        local rX = math.random(-scaleFactor, scaleFactor)
+        local rY = math.random(-scaleFactor / 2, scaleFactor / 2)
+        local rZ = math.random(-scaleFactor, scaleFactor)
+        
+        rootPart.CFrame = CFrame.new(rX, rY, rZ)
+    end)
+end)
+
+-- Watermark
+Library:SetWatermarkVisibility(true)
+
+local FrameTimer = tick()
+local FrameCounter = 0
+local FPS = 60
+
+local WatermarkConnection = RunService.RenderStepped:Connect(function()
+    FrameCounter += 1
+
+    if (tick() - FrameTimer) >= 1 then
+        FPS = FrameCounter
+        FrameTimer = tick()
+        FrameCounter = 0
+    end
+
+    local ping = 0
+    pcall(function()
+        ping = math.floor(game:GetService('Stats').Network.ServerStatsItem['Data Ping']:GetValue())
+    end)
+
+    Library:SetWatermark(('iloveyouimgay | hvh loader | %s fps | %s ms'):format(
+        math.floor(FPS),
+        ping
+    ))
+end)
+
+Library.KeybindFrame.Visible = true
+
+Library:OnUnload(function()
+    WatermarkConnection:Disconnect()
+    print('Unloaded!')
+    Library.Unloaded = true
+end)
+
+-- UI Settings
+local MenuGroup = Tabs['UI Settings']:AddLeftGroupbox('Menu')
+
+MenuGroup:AddToggle('KeybindMenuOpen', {
+    Text = 'Show Keybind Menu',
+    Default = Library.KeybindFrame.Visible,
+    Tooltip = 'Toggle the keybind list visibility',
+    Callback = function(Value)
+        Library.KeybindFrame.Visible = Value
+    end
+})
+
+MenuGroup:AddButton('Unload', function()
+    Library:Unload()
+end)
+
+MenuGroup:AddLabel('Menu bind'):AddKeyPicker('MenuKeybind', {
+    Default = 'RightControl',
+    NoUI = true,
+    Text = 'Menu keybind'
+})
+
+Library.ToggleKeybind = Options.MenuKeybind
+
+-- Apply theme
+ThemeManager:SetLibrary(Library)
+SaveManager:SetLibrary(Library)
+
+SaveManager:IgnoreThemeSettings()
+SaveManager:SetIgnoreIndexes({ 'MenuKeybind' })
+
+ThemeManager:SetFolder('iloveyouimgay_hvh')
+SaveManager:SetFolder('iloveyouimgay_hvh/specific-game')
+
+SaveManager:BuildConfigSection(Tabs['UI Settings'])
+ThemeManager:ApplyToTab(Tabs['UI Settings'])
+
+-- Force professional colors
+Library.AccentColor     = Color3.fromRGB(70, 130, 220)
+Library.MainColor       = Color3.fromRGB(18, 18, 20)
+Library.BackgroundColor = Color3.fromRGB(12, 12, 14)
+Library.OutlineColor    = Color3.fromRGB(32, 32, 36)
+Library.FontColor       = Color3.fromRGB(225, 225, 230)
+
+Library:UpdateColorsUsingRegistry()
+
+-- Force everything square
+local function MakeEverythingSquare(parent)
+    if not parent then return end
+    for _, obj in ipairs(parent:GetDescendants()) do
+        if obj:IsA("UICorner") then
+            obj.CornerRadius = UDim.new(0, 0)
+        end
+    end
+end
+
+task.defer(function()
+    task.wait(0.1)
+    if Library.ScreenGui then
+        MakeEverythingSquare(Library.ScreenGui)
+    end
+    if Library.KeybindFrame then
+        MakeEverythingSquare(Library.KeybindFrame)
+    end
+end)
+
+SaveManager:LoadAutoloadConfig()
